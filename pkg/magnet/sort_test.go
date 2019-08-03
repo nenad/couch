@@ -1,7 +1,6 @@
 package magnet_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/nenad/couch/pkg/magnet"
@@ -173,23 +172,15 @@ func TestSortCombined(t *testing.T) {
 		},
 	}
 
+	fs := []magnet.ProcessFunc{
+		magnet.SortSize(false),
+		magnet.SortEncoding(true),
+		magnet.SortQuality(true),
+	}
+
 	for _, test := range testCases {
-		fs := []magnet.ProcessFunc{
-			magnet.SortSize(false),
-			magnet.SortEncoding(true),
-			magnet.SortQuality(true),
-		}
-		for i, f := range fs {
-			fmt.Printf("Test %d\n", i)
-			fmt.Printf("Before:\n")
-			for i, m := range test.magnets {
-				fmt.Printf("%d: %d %s %s\n", i, m.Size, m.Encoding, m.Quality)
-			}
+		for _, f := range fs {
 			f(test.magnets)
-			fmt.Printf("After: \n")
-			for i, m := range test.magnets {
-				fmt.Printf("%d: %d %s %s\n", i, m.Size, m.Encoding, m.Quality)
-			}
 		}
 		assert.Equal(t, test.expectedOrder, test.magnets)
 	}
