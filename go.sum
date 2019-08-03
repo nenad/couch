@@ -58,6 +58,8 @@ github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815/go.mod h1:WwZ+bS3
 github.com/dustin/go-humanize v0.0.0-20180421182945-02af3965c54e/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/dustin/go-humanize v1.0.0 h1:VSnTsYCnlFHaM2/igO1h6X3HA71jcobQuxemgkq4zYo=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
+github.com/dyrkin/fsm v0.0.0-20181122213812-68a0d0ca4628 h1:K3sw2IzspoaCOYjTNXcpiYtwQnCeEN9PA5jhWDy0zq4=
+github.com/dyrkin/fsm v0.0.0-20181122213812-68a0d0ca4628/go.mod h1:C+ACovlJ2843kzxjLkE0HMZyxB6OG39JkmCb43M339g=
 github.com/edsrzf/mmap-go v0.0.0-20170320065105-0bce6a688712/go.mod h1:YO35OhQPt3KJa3ryjFM5Bs14WD66h8eGKpfaBNrHW5M=
 github.com/edsrzf/mmap-go v1.0.0 h1:CEBF7HpRnUCSJgGUb5h1Gm7e3VkmVDrR8lvWVLtrOFw=
 github.com/edsrzf/mmap-go v1.0.0/go.mod h1:YO35OhQPt3KJa3ryjFM5Bs14WD66h8eGKpfaBNrHW5M=
@@ -114,16 +116,8 @@ github.com/mattn/go-sqlite3 v1.10.0 h1:jbhqpg7tQe4SupckyijYiy0mJJ/pRyHvXf7JdWK86
 github.com/mattn/go-sqlite3 v1.10.0/go.mod h1:FPy6KqzDD04eiIsT53CuJW3U88zkxoIYsOqkbpncsNc=
 github.com/mschoch/smat v0.0.0-20160514031455-90eadee771ae h1:VeRdUYdCw49yizlSbMEn2SZ+gT+3IUKx8BqxyQdz+BY=
 github.com/mschoch/smat v0.0.0-20160514031455-90eadee771ae/go.mod h1:qAyveg+e4CE+eKJXWVjKXM4ck2QobLqTDytGJbLLhJg=
-github.com/nenad/rd v0.0.10 h1:5hJyxRaOaHAJQWU3VmpVsurZOT4HB4jw35qaQVqw8iw=
-github.com/nenad/rd v0.0.10 h1:KMoNJWDqBGYnjJm1lcLqqf/TZvtMAVV4sfaNq0LKpGc=
-github.com/nenad/rd v0.0.10/go.mod h1:1AzVI2/KkrkXCaFhQJxyXJ8539+oycZVGdRp6Oseh9k=
-github.com/nenad/rd v0.0.10/go.mod h1:h3rE5en05BVVPYCVpS3nWuRpV/UthfDgv6PXYnaQW4I=
 github.com/nenad/rd v0.0.11 h1:QNE5bNrkGVMaGVCqWmsgviDNYj3VT4vcc4h09P3JUg8=
 github.com/nenad/rd v0.0.11/go.mod h1:1AzVI2/KkrkXCaFhQJxyXJ8539+oycZVGdRp6Oseh9k=
-github.com/nenad/trakt v0.0.0-20190204225050-846f0c75551e h1:DxUtATn9S7NEaVNuMLdEO5ss25y/fG7YO0bg2tpg0c4=
-github.com/nenad/trakt v0.0.0-20190204225050-846f0c75551e h1:bOmQVPBPNUeS8vNzhH3MAeUA02RxgAsRhq/qW6tcwpc=
-github.com/nenad/trakt v0.0.0-20190204225050-846f0c75551e/go.mod h1:XengqT3ziXCick8/LdzlRbzhNJu7g3z+p1gL2HToDnI=
-github.com/nenad/trakt v0.0.0-20190204225050-846f0c75551e/go.mod h1:qVj3qgElX8NntWRJVn1RCa66fI1MOJAm6KHWvddj398=
 github.com/nenad/trakt v0.0.0-20190615101746-fe85e7def576 h1:wkw2C2M/8YZSscNdMMdXKaiII/4rystwZ4QakBJqWkQ=
 github.com/nenad/trakt v0.0.0-20190615101746-fe85e7def576/go.mod h1:+zW4hy3fkQsRnBnI+VdS8EdNVb6oAvMlbCTT8LYh1Gk=
 github.com/op/go-logging v0.0.0-20160315200505-970db520ece7 h1:lDH9UUVJtmYCjyT0CI4q8xvlXPxeZ0gYCVvWbmPlp88=

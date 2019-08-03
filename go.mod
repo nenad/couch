@@ -6,6 +6,7 @@ require (
 	github.com/anacrolix/mmsg v1.0.0 // indirect
 	github.com/anacrolix/torrent v1.1.4
 	github.com/cavaliercoder/grab v2.0.0+incompatible
+	github.com/dyrkin/fsm v0.0.0-20181122213812-68a0d0ca4628
 	github.com/glycerine/goconvey v0.0.0-20190410193231-58a59202ab31 // indirect
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/google/btree v1.0.0 // indirect
