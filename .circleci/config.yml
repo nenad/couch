@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  run-unit-tests:
+    docker:
+      - image: circleci/golang:1.12
+
+    working_directory: /go/src/github.com/nenad/couch
+    steps:
+      - checkout
+      - run:
+          name: Fetch packages
+          command: go get -v -t -d ./...
+      - run:
+          name: Run unit tests
+          command:  go test -v ./...
+
+workflows:
+  version: 2
+  test-workflow:
+    jobs:
+      - run-unit-tests
+
