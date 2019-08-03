@@ -1,10 +1,11 @@
-package state
+package state_test
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/nenad/couch/pkg/media"
+	"github.com/nenad/couch/pkg/state"
 	"github.com/nenad/couch/pkg/storage"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,18 +16,18 @@ var items = []media.SearchItem{
 }
 
 func TestDispatcher_Scrape(t *testing.T) {
-	d := NewDispatcher()
+	d := state.NewDispatcher()
 	expItem := items[0]
 	expMagnets := []storage.Magnet{
 		{Item: expItem, Location: "magnet://1"},
 		{Item: expItem, Location: "magnet://2"},
 	}
 
-	d.OnScrape(func(item media.SearchItem) ScrapeResult {
-		return ScrapeResult{Value: []storage.Magnet{expMagnets[0]}}
+	d.OnScrape(func(item media.SearchItem) state.ScrapeResult {
+		return state.ScrapeResult{Value: []storage.Magnet{expMagnets[0]}}
 	})
-	d.OnScrape(func(item media.SearchItem) ScrapeResult {
-		return ScrapeResult{Value: []storage.Magnet{expMagnets[1]}}
+	d.OnScrape(func(item media.SearchItem) state.ScrapeResult {
+		return state.ScrapeResult{Value: []storage.Magnet{expMagnets[1]}}
 	})
 
 	res := d.Scrape(expItem)
@@ -38,33 +39,33 @@ func TestDispatcher_Scrape(t *testing.T) {
 }
 
 func TestDispatcher_ScrapeError(t *testing.T) {
-	d := NewDispatcher()
+	d := state.NewDispatcher()
 	expItem := items[0]
 	expMagnets := []storage.Magnet{
 		{Item: expItem, Location: "magnet://1"},
 		{Item: expItem, Location: "magnet://2"},
 	}
 
-	d.OnScrape(func(item media.SearchItem) ScrapeResult {
-		return ScrapeResult{Value: []storage.Magnet{expMagnets[0]}}
+	d.OnScrape(func(item media.SearchItem) state.ScrapeResult {
+		return state.ScrapeResult{Value: []storage.Magnet{expMagnets[0]}}
 	})
-	d.OnScrape(func(item media.SearchItem) ScrapeResult {
-		return ScrapeResult{nil, fmt.Errorf("something bad happened")}
+	d.OnScrape(func(item media.SearchItem) state.ScrapeResult {
+		return state.ScrapeResult{Error: fmt.Errorf("something bad happened")}
 	})
 
 	res := d.Scrape(expItem)
 
-	assert.Equal(t, ScrapeResult{
+	assert.Equal(t, state.ScrapeResult{
 		Value: nil,
 		Error: fmt.Errorf("something bad happened"),
 	}, res)
 }
 
 func TestDispatcher_Extract(t *testing.T) {
-	d := NewDispatcher()
+	d := state.NewDispatcher()
 
 	// Episode extractor
-	d.OnExtract(func(magnets []storage.Magnet) ExtractResult {
+	d.OnExtract(func(magnets []storage.Magnet) state.ExtractResult {
 		var downloads []storage.Download
 		for _, d := range magnets {
 			if d.Item.Type == media.TypeEpisode {
@@ -72,11 +73,11 @@ func TestDispatcher_Extract(t *testing.T) {
 			}
 		}
 
-		return ExtractResult{Value: downloads}
+		return state.ExtractResult{Value: downloads}
 	})
 
 	// Movie extractor
-	d.OnExtract(func(magnets []storage.Magnet) ExtractResult {
+	d.OnExtract(func(magnets []storage.Magnet) state.ExtractResult {
 		var downloads []storage.Download
 		for _, d := range magnets {
 			if d.Item.Type == media.TypeMovie {
@@ -84,7 +85,7 @@ func TestDispatcher_Extract(t *testing.T) {
 			}
 		}
 
-		return ExtractResult{Value: downloads}
+		return state.ExtractResult{Value: downloads}
 	})
 
 	expCount := len(items)
@@ -105,16 +106,16 @@ func TestDispatcher_Extract(t *testing.T) {
 }
 
 func TestDispatcher_ExtractError(t *testing.T) {
-	d := NewDispatcher()
+	d := state.NewDispatcher()
 
 	// Episode extractor
-	d.OnExtract(func(magnets []storage.Magnet) ExtractResult {
-		return ExtractResult{Value: []storage.Download{}}
+	d.OnExtract(func(magnets []storage.Magnet) state.ExtractResult {
+		return state.ExtractResult{Value: []storage.Download{}}
 	})
 
 	// Movie extractor
-	d.OnExtract(func(magnets []storage.Magnet) ExtractResult {
-		return ExtractResult{Error: fmt.Errorf("extraction failed")}
+	d.OnExtract(func(magnets []storage.Magnet) state.ExtractResult {
+		return state.ExtractResult{Error: fmt.Errorf("extraction failed")}
 	})
 
 	res := d.Extract([]storage.Magnet{
@@ -122,14 +123,14 @@ func TestDispatcher_ExtractError(t *testing.T) {
 		{Item: items[1]},
 	})
 
-	assert.Equal(t, ExtractResult{Value:nil, Error:fmt.Errorf("extraction failed")}, res)
+	assert.Equal(t, state.ExtractResult{Value:nil, Error:fmt.Errorf("extraction failed")}, res)
 }
 
 func TestDispatcher_Download(t *testing.T) {
-	d := NewDispatcher()
+	d := state.NewDispatcher()
 
 	// Episode downloader
-	d.OnDownload(func(downloads []storage.Download) DownloadResult {
+	d.OnDownload(func(downloads []storage.Download) state.DownloadResult {
 		var downloadedItems []media.SearchItem
 		for _, d := range downloads {
 			if d.Item.Type == media.TypeEpisode {
@@ -137,11 +138,11 @@ func TestDispatcher_Download(t *testing.T) {
 			}
 		}
 
-		return DownloadResult{Value: downloadedItems}
+		return state.DownloadResult{Value: downloadedItems}
 	})
 
 	// Movie downloader
-	d.OnDownload(func(downloads []storage.Download) DownloadResult {
+	d.OnDownload(func(downloads []storage.Download) state.DownloadResult {
 		var downloadedItems []media.SearchItem
 		for _, d := range downloads {
 			if d.Item.Type == media.TypeMovie {
@@ -149,7 +150,7 @@ func TestDispatcher_Download(t *testing.T) {
 			}
 		}
 
-		return DownloadResult{Value: downloadedItems}
+		return state.DownloadResult{Value: downloadedItems}
 	})
 
 	expCount := len(items)
@@ -165,16 +166,16 @@ func TestDispatcher_Download(t *testing.T) {
 }
 
 func TestDispatcher_DownloadError(t *testing.T) {
-	d := NewDispatcher()
+	d := state.NewDispatcher()
 
 	// Episode downloader
-	d.OnDownload(func(downloads []storage.Download) DownloadResult {
-		return DownloadResult{Value: items}
+	d.OnDownload(func(downloads []storage.Download) state.DownloadResult {
+		return state.DownloadResult{Value: items}
 	})
 
 	// Movie downloader
-	d.OnDownload(func(downloads []storage.Download) DownloadResult {
-		return DownloadResult{Error: fmt.Errorf("download error")}
+	d.OnDownload(func(downloads []storage.Download) state.DownloadResult {
+		return state.DownloadResult{Error: fmt.Errorf("download error")}
 	})
 
 	res := d.Download([]storage.Download{
@@ -182,5 +183,5 @@ func TestDispatcher_DownloadError(t *testing.T) {
 		{Item: items[1]},
 	})
 
-	assert.Equal(t, DownloadResult{Value:nil, Error:fmt.Errorf("download error")}, res)
+	assert.Equal(t, state.DownloadResult{Value:nil, Error:fmt.Errorf("download error")}, res)
 }
