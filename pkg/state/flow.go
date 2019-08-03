@@ -52,6 +52,11 @@ func (f *Flow) Status() fsm.State {
 	return f.fsm.CurrentState()
 }
 
+func (f *Flow) Resume(state fsm.State, data interface{}) {
+	f.fsm.Goto(state).With(data)
+	f.update()
+}
+
 func New(item media.SearchItem) *Flow {
 	f := fsm.NewFSM()
 

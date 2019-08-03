@@ -68,3 +68,7 @@ func TestFlow_SetDownloadFunc(t *testing.T) {
 	time.Sleep(time.Millisecond * 50)
 	assert.True(t, executed)
 }
+
+func TestFlow_Resume(t *testing.T) {
+	
+}
