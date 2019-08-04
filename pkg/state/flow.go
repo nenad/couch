@@ -43,8 +43,7 @@ func (f *Flow) SetDownloadFunc(downloader func(downloads []storage.Download) Dow
 }
 
 func (f *Flow) Begin() {
-	// Two updates, since we need to quickly switch two states: None->Pending->Scraping
-	f.update()
+	f.Resume(PendingState, f.item)
 	f.update()
 }
 
@@ -53,7 +52,7 @@ func (f *Flow) Status() fsm.State {
 }
 
 func (f *Flow) Resume(state fsm.State, data interface{}) {
-	f.fsm.Goto(state).With(data)
+	f.fsm.StartWith(state, data)
 	f.update()
 }
 
