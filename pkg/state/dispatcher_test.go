@@ -123,7 +123,7 @@ func TestDispatcher_ExtractError(t *testing.T) {
 		{Item: items[1]},
 	})
 
-	assert.Equal(t, state.ExtractResult{Value:nil, Error:fmt.Errorf("extraction failed")}, res)
+	assert.Equal(t, state.ExtractResult{Value: nil, Error: fmt.Errorf("extraction failed")}, res)
 }
 
 func TestDispatcher_Download(t *testing.T) {
@@ -183,5 +183,5 @@ func TestDispatcher_DownloadError(t *testing.T) {
 		{Item: items[1]},
 	})
 
-	assert.Equal(t, state.DownloadResult{Value:nil, Error:fmt.Errorf("download error")}, res)
+	assert.Equal(t, state.DownloadResult{Value: nil, Error: fmt.Errorf("download error")}, res)
 }
