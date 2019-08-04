@@ -68,7 +68,7 @@ func (step *extractStep) Extract(magnetChan chan storage.Magnet) chan storage.Do
 					}
 
 					dlLocation := storage.Download{
-						Location:    url,
+						Remote:      url,
 						Destination: dest,
 						Item:        m.Item,
 					}

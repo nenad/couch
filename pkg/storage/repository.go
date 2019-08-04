@@ -60,7 +60,7 @@ type (
 	}
 
 	Download struct {
-		Location    string
+		Remote      string
 		Destination string
 		Item        media.SearchItem
 	}
@@ -96,7 +96,7 @@ func (r *MediaRepository) AddDownload(download Download) error {
 	_, err = tx.Exec(
 		"INSERT OR IGNORE INTO downloads (title, url, destination, status) VALUES (?, ?, ?, ?)",
 		download.Item.Term,
-		download.Location,
+		download.Remote,
 		download.Destination,
 		"Downloading",
 	)
@@ -144,7 +144,7 @@ AND l.status in ('Error', 'Downloading');
 
 	for rows.Next() {
 		var d Download
-		err = rows.Scan(&d.Item.Term, &d.Item.Type, &d.Location, &d.Destination)
+		err = rows.Scan(&d.Item.Term, &d.Item.Type, &d.Remote, &d.Destination)
 		if err != nil {
 			return
 		}
