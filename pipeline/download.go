@@ -49,7 +49,7 @@ func (step *DownloadStep) Download(downloads <-chan storage.Download) chan media
 	go func() {
 		// Start downloads
 		for dl := range downloads {
-			logrus.Debugf("queueing download for %q", dl.Location)
+			logrus.Debugf("queueing download for %q", dl.Remote)
 			if err := step.repo.AddDownload(dl); err != nil {
 				logrus.Errorf("error while adding a download link: %s", err)
 				continue
@@ -57,19 +57,19 @@ func (step *DownloadStep) Download(downloads <-chan storage.Download) chan media
 			step.notifier.OnQueued(dl.Item)
 
 			step.mu.Lock()
-			if _, ok := step.currentDownloads[dl.Location]; ok {
-				logrus.Debugf("skipped download for %q, already in progress", dl.Location)
+			if _, ok := step.currentDownloads[dl.Remote]; ok {
+				logrus.Debugf("skipped download for %q, already in progress", dl.Remote)
 				step.mu.Unlock()
 				continue
 			}
-			step.currentDownloads[dl.Location] = nil
+			step.currentDownloads[dl.Remote] = nil
 			step.mu.Unlock()
 
 			// Acquire a token or wait until one is available
 			step.maxDL <- struct{}{}
 
-			logrus.Debugf("started download for %q", dl.Location)
-			informer, err := step.getter.Get(dl.Item, dl.Location, dl.Destination)
+			logrus.Debugf("started download for %q", dl.Remote)
+			informer, err := step.getter.Get(dl.Item, dl.Remote, dl.Local)
 			if err != nil {
 				logrus.Errorf("error during download: %s", err)
 				continue

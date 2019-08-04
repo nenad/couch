@@ -68,9 +68,9 @@ func (step *extractStep) Extract(magnetChan chan storage.Magnet) chan storage.Do
 					}
 
 					dlLocation := storage.Download{
-						Location:    url,
-						Destination: dest,
-						Item:        m.Item,
+						Remote: url,
+						Local:  dest,
+						Item:   m.Item,
 					}
 
 					if err := step.repo.AddDownload(dlLocation); err != nil {
