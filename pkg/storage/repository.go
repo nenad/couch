@@ -59,9 +59,13 @@ type (
 		db *sql.DB
 	}
 
+	// A Download stores the remote and local locations of a file
 	Download struct {
+		// Remote is the location where the original file resides (ex. URL)
 		Remote      string
-		Destination string
+		// Local is the location where the file will be downloaded
+		Local string
+		// Item is the metadata about the downloaded file
 		Item        media.SearchItem
 	}
 )
@@ -97,7 +101,7 @@ func (r *MediaRepository) AddDownload(download Download) error {
 		"INSERT OR IGNORE INTO downloads (title, url, destination, status) VALUES (?, ?, ?, ?)",
 		download.Item.Term,
 		download.Remote,
-		download.Destination,
+		download.Local,
 		"Downloading",
 	)
 	if err != nil {
@@ -144,7 +148,7 @@ AND l.status in ('Error', 'Downloading');
 
 	for rows.Next() {
 		var d Download
-		err = rows.Scan(&d.Item.Term, &d.Item.Type, &d.Remote, &d.Destination)
+		err = rows.Scan(&d.Item.Term, &d.Item.Type, &d.Remote, &d.Local)
 		if err != nil {
 			return
 		}

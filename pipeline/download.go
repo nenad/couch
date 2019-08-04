@@ -69,7 +69,7 @@ func (step *DownloadStep) Download(downloads <-chan storage.Download) chan media
 			step.maxDL <- struct{}{}
 
 			logrus.Debugf("started download for %q", dl.Remote)
-			informer, err := step.getter.Get(dl.Item, dl.Remote, dl.Destination)
+			informer, err := step.getter.Get(dl.Item, dl.Remote, dl.Local)
 			if err != nil {
 				logrus.Errorf("error during download: %s", err)
 				continue
