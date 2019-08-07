@@ -8,8 +8,6 @@ func Migrations() []string {
 
 		`CREATE TABLE config (config TEXT)`,
 
-		`INSERT INTO config values ('{}');`,
-
 		// Search data
 		`CREATE TABLE search_items (
 title TEXT NOT NULL PRIMARY KEY,

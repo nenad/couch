@@ -33,7 +33,7 @@ func (s *Store) Save(v interface{}) error {
 		return err
 	}
 
-	_, err = s.DB.Exec("UPDATE config SET config = ?", b)
+	_, err = s.DB.Exec("REPLACE INTO config(config) VALUES(?);", b)
 	return err
 }
 
