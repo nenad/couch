@@ -33,8 +33,22 @@ func (s *Store) Save(v interface{}) error {
 		return err
 	}
 
-	_, err = s.DB.Exec("REPLACE INTO config(config) VALUES(?);", b)
-	return err
+	tx, err := s.DB.Begin()
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM config;")
+	if err != nil {
+		return s.errorRollback(tx, err)
+	}
+
+	_, err = tx.Exec("INSERT INTO config(config) VALUES(?);", b)
+	if err != nil {
+		return s.errorRollback(tx, err)
+	}
+
+	return tx.Commit()
 }
 
 func (s *Store) Load() (interface{}, error) {
@@ -49,4 +63,16 @@ func (s *Store) Load() (interface{}, error) {
 	var c Config
 	err = json.Unmarshal(j, &c)
 	return c, err
+}
+
+func (s *Store) errorRollback(tx *sql.Tx, err error) error {
+	if err != nil {
+		rerr := tx.Rollback()
+		if rerr != nil {
+			return rerr
+		}
+		return err
+	}
+
+	return nil
 }
