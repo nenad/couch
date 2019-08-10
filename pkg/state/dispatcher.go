@@ -25,12 +25,17 @@ type (
 )
 
 type Dispatcher struct {
-	scrapeCallbacks   []func(item media.SearchItem) ScrapeResult
-	scrapeMu          sync.Mutex
-	extractCallbacks  []func([]storage.Magnet) ExtractResult
-	extractMu         sync.Mutex
-	downloadCallbacks []func([]storage.Download) DownloadResult
-	downloadMu        sync.Mutex
+	scrapeCallbacks      []func(item media.SearchItem) ScrapeResult
+	afterScrapeCallbacks []func([]storage.Magnet) []storage.Magnet
+	scrapeMu             sync.Mutex
+
+	extractCallbacks      []func([]storage.Magnet) ExtractResult
+	afterExtractCallbacks []func([]storage.Download) []storage.Download
+	extractMu             sync.Mutex
+
+	downloadCallbacks      []func([]storage.Download) DownloadResult
+	afterDownloadCallbacks []func([]media.SearchItem) []media.SearchItem
+	downloadMu             sync.Mutex
 }
 
 func NewDispatcher() Dispatcher {
@@ -44,6 +49,13 @@ func (d *Dispatcher) OnScrape(f func(item media.SearchItem) ScrapeResult) {
 	d.scrapeCallbacks = append(d.scrapeCallbacks, f)
 }
 
+// AfterScrape registers a callback to be invoked when scraping finishes
+func (d *Dispatcher) AfterScrape(f func([]storage.Magnet) []storage.Magnet) {
+	d.scrapeMu.Lock()
+	defer d.scrapeMu.Unlock()
+	d.afterScrapeCallbacks = append(d.afterScrapeCallbacks, f)
+}
+
 // OnExtract registers a callback to be invoked when extracting begins
 func (d *Dispatcher) OnExtract(f func(magnets []storage.Magnet) ExtractResult) {
 	d.extractMu.Lock()
@@ -51,11 +63,25 @@ func (d *Dispatcher) OnExtract(f func(magnets []storage.Magnet) ExtractResult) {
 	d.extractCallbacks = append(d.extractCallbacks, f)
 }
 
+// AfterExtract registers a callback to be invoked when extracting finishes
+func (d *Dispatcher) AfterExtract(f func([]storage.Download) []storage.Download) {
+	d.extractMu.Lock()
+	defer d.extractMu.Unlock()
+	d.afterExtractCallbacks = append(d.afterExtractCallbacks, f)
+}
+
 // OnDownload registers a callback to be invoked when downloading begins
 func (d *Dispatcher) OnDownload(f func(downloads []storage.Download) DownloadResult) {
 	d.downloadMu.Lock()
 	defer d.downloadMu.Unlock()
 	d.downloadCallbacks = append(d.downloadCallbacks, f)
+}
+
+// AfterDownload registers a callback to be invoked when downloading finishes
+func (d *Dispatcher) AfterDownload(f func([]media.SearchItem) []media.SearchItem) {
+	d.downloadMu.Lock()
+	defer d.downloadMu.Unlock()
+	d.afterDownloadCallbacks = append(d.afterDownloadCallbacks, f)
 }
 
 // Scrape invokes all registered hooks through OnScrape in the order
