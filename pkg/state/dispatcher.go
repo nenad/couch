@@ -86,7 +86,7 @@ func (d *Dispatcher) AfterDownload(f func([]media.SearchItem) []media.SearchItem
 
 // Scrape invokes all registered hooks through OnScrape in the order
 // they were registered. If a callback returns error, this function
-// will return the result of the errored callback.
+// will return the result of the errored callback and won't run the after hooks.
 func (d *Dispatcher) Scrape(item media.SearchItem) ScrapeResult {
 	var magnets []storage.Magnet
 	for _, f := range d.scrapeCallbacks {
@@ -98,12 +98,17 @@ func (d *Dispatcher) Scrape(item media.SearchItem) ScrapeResult {
 		magnets = append(magnets, result.Value...)
 	}
 
+	// Run after hooks
+	for _, c := range d.afterScrapeCallbacks {
+		magnets = c(magnets)
+	}
+
 	return ScrapeResult{magnets, nil}
 }
 
 // Extract invokes all registered hooks through OnExtract in the order
 // they were registered. If a callback returns error, this function
-// will return the result of the errored callback.
+// will return the result of the errored callback and won't run the after hooks.
 func (d *Dispatcher) Extract(magnets []storage.Magnet) ExtractResult {
 	var downloads []storage.Download
 	for _, f := range d.extractCallbacks {
@@ -115,12 +120,17 @@ func (d *Dispatcher) Extract(magnets []storage.Magnet) ExtractResult {
 		downloads = append(downloads, result.Value...)
 	}
 
+	// Run after hooks
+	for _, c := range d.afterExtractCallbacks {
+		downloads = c(downloads)
+	}
+
 	return ExtractResult{downloads, nil}
 }
 
 // Download invokes all registered hooks through OnDownload in the order
 // they were registered. If a callback returns error, this function
-// will return the result of the errored callback.
+// will return the result of the errored callback and won't run the after hooks.
 func (d *Dispatcher) Download(downloads []storage.Download) DownloadResult {
 	var items []media.SearchItem
 	for _, f := range d.downloadCallbacks {
@@ -130,6 +140,11 @@ func (d *Dispatcher) Download(downloads []storage.Download) DownloadResult {
 		}
 
 		items = append(items, result.Value...)
+	}
+
+	// Run after hooks
+	for _, c := range d.afterDownloadCallbacks {
+		items = c(items)
 	}
 
 	return DownloadResult{items, nil}
