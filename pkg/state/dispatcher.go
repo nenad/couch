@@ -37,26 +37,30 @@ func NewDispatcher() Dispatcher {
 	return Dispatcher{}
 }
 
-// TODO Add non-fatal hooks
+// OnScrape registers a callback to be invoked when scraping begins
 func (d *Dispatcher) OnScrape(f func(item media.SearchItem) ScrapeResult) {
 	d.scrapeMu.Lock()
 	defer d.scrapeMu.Unlock()
 	d.scrapeCallbacks = append(d.scrapeCallbacks, f)
 }
 
+// OnExtract registers a callback to be invoked when extracting begins
 func (d *Dispatcher) OnExtract(f func(magnets []storage.Magnet) ExtractResult) {
 	d.extractMu.Lock()
 	defer d.extractMu.Unlock()
 	d.extractCallbacks = append(d.extractCallbacks, f)
 }
 
+// OnDownload registers a callback to be invoked when downloading begins
 func (d *Dispatcher) OnDownload(f func(downloads []storage.Download) DownloadResult) {
 	d.downloadMu.Lock()
 	defer d.downloadMu.Unlock()
 	d.downloadCallbacks = append(d.downloadCallbacks, f)
 }
 
-// TODO Parallelize work in scraping, extracting and downloading
+// Scrape invokes all registered hooks through OnScrape in the order
+// they were registered. If a callback returns error, this function
+// will return the result of the errored callback.
 func (d *Dispatcher) Scrape(item media.SearchItem) ScrapeResult {
 	var magnets []storage.Magnet
 	for _, f := range d.scrapeCallbacks {
@@ -71,6 +75,9 @@ func (d *Dispatcher) Scrape(item media.SearchItem) ScrapeResult {
 	return ScrapeResult{magnets, nil}
 }
 
+// Extract invokes all registered hooks through OnExtract in the order
+// they were registered. If a callback returns error, this function
+// will return the result of the errored callback.
 func (d *Dispatcher) Extract(magnets []storage.Magnet) ExtractResult {
 	var downloads []storage.Download
 	for _, f := range d.extractCallbacks {
@@ -85,6 +92,9 @@ func (d *Dispatcher) Extract(magnets []storage.Magnet) ExtractResult {
 	return ExtractResult{downloads, nil}
 }
 
+// Download invokes all registered hooks through OnDownload in the order
+// they were registered. If a callback returns error, this function
+// will return the result of the errored callback.
 func (d *Dispatcher) Download(downloads []storage.Download) DownloadResult {
 	var items []media.SearchItem
 	for _, f := range d.downloadCallbacks {
