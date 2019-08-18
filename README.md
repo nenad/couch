@@ -45,6 +45,10 @@ Related files:
 - `pkg/download`
 - `pkg/magnet`
 
+### WIP Features
+
+- Rework to have a state machine flow per downloadable item instead of a pipeline
+
 ## Resilience
 
 If the program crashes during download, or any other procedure it will continue after it is restarted. The progress
@@ -59,3 +63,4 @@ from the torrent. This means when a movie or TV show will be downloaded it will 
 
 The `http` flow will push the magnet to [Real-Debrid](http://real-debrid.com), and once it's downloaded on the remote
 server, `couch` will start downloading the file to the directory specified in the config.
+
